@@ -3,7 +3,7 @@ package com.rafael
 import com.rafael.http.EndUserCompanies
 import com.rafael.pubsub.EligibleConsumer
 
-fun main(args: Array<String>): Unit {
+fun main(): Unit {
 
     val consumer = EligibleConsumer()
     consumer.up()

@@ -29,7 +29,7 @@ class EndUserCompanies {
 
             get("/end-user-companies") {
                 val eligible = EndUser(1, "teste@teste.com", "abc123", "2948")
-                call.respond(synchronized(eligible) { eligible })
+                call.respond(eligible)
             }
         }
     }

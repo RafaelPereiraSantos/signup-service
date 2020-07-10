@@ -13,7 +13,8 @@ apply plugin: 'application'
 
 group 'com.rafael'
 version '0.0.1'
-mainClassName = "io.ktor.server.netty.EngineMain"
+//mainClassName = "io.ktor.server.netty.EngineMain"
+mainClassName = "com.rafael.ApplicationKt"
 
 sourceSets {
     main.kotlin.srcDirs = main.java.srcDirs = ['src']

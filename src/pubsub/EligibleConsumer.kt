@@ -6,15 +6,16 @@ import com.rabbitmq.client.AMQP
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DefaultConsumer
 import com.rabbitmq.client.Envelope
+import com.rafael.models.AppConfig
 import com.rafael.models.EligibleCreatedEvent
 
 import com.rafael.service.Association
 
-class EligibleConsumer(val host: String = "localhost", val port: Int = 15672) {
+class EligibleConsumer() {
 
     fun up() {
         val factory = ConnectionFactory()
-        factory.host = host
+        factory.host = AppConfig.rabbitConfig.host
         val connection = factory.newConnection()
         val channel = connection.createChannel()
 

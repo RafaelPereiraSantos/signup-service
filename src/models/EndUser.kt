@@ -5,4 +5,7 @@ data class EndUser(
     val email: String,
     val employee_id: String,
     val personal_document: String
-)
+) {
+    constructor(event: EligibleCreatedEvent):
+            this(0, event.emailAddress, event.employeeId, "")
+}

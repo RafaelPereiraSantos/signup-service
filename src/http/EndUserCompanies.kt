@@ -3,6 +3,7 @@ package com.rafael.http
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.rafael.models.AppConfig
 import com.rafael.models.EndUser
+import com.rafael.service.Association
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -13,7 +14,6 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.server.netty.NettyApplicationEngine
 
 class EndUserCompanies {
 
@@ -39,8 +39,9 @@ fun Application.endUserCompaniesModule() {
         }
 
         get("/end-user-companies") {
-            val eligible = EndUser(1, "teste@teste.com", "abc123", "2948")
-            call.respond(eligible)
+            val endUser = EndUser(1, "teste@teste.com", "abc123", "2948")
+//            Association.associate(endUser)
+            call.respond(endUser)
         }
     }
 }

@@ -6,51 +6,51 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.url
+import io.ktor.client.engine.apache.Apache
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
-import java.util.logging.Logger
 
 object Association {
 
-    private const val CORE_URL = "http://fake-core.com/associate"
+    private const val CORE_URL = "http://localhost:3001/associate"
 
     fun associate(endUser: EndUser) {
-        try {
-            runBlocking {
-                val response = postAssociation(formatPayload(endUser))
-                when (response.status) {
-                    HttpStatusCode.Created -> {
-                        println("associated")
-                    }
-                    HttpStatusCode.Unauthorized -> {
-                        println("unauthorized")
-                    }
-                    else -> {
-                        println(response.status)
-                    }
+        runBlocking {
+            val response = postAssociation(formatPayload(endUser))
+            when (response.status) {
+                HttpStatusCode.Created -> {
+                    println("associated")
+                }
+                HttpStatusCode.Unauthorized -> {
+                    throw Exception("core.unauthorized")
+                }
+                else -> {
+                    throw Exception("core.response.$response.status")
+                    println(response.status)
                 }
             }
-        } catch (e: Exception) {
-            println(e)
         }
     }
 
-    fun associate(eligibleEvent: EligibleCreatedEvent) {
-        associate(EndUser(eligibleEvent))
-    }
-
     private fun formatPayload(endUser: EndUser): String {
-        return("")
+        return(endUser.toString())
     }
 
     private suspend fun postAssociation(payload: String): HttpResponse {
-        val client = HttpClient()
-        return client.post<HttpResponse> {
+        val client = HttpClient(Apache) {
+            engine {
+                followRedirects = true
+                connectTimeout = 10_000
+            }
+        }
+        val response = client.post<HttpResponse> {
             url(CORE_URL)
             header("auth", "secretAuth")
             body = payload
         }
+        client.close()
+        return response
     }
 }

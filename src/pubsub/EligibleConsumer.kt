@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.rabbitmq.client.*
 import com.rafael.models.AppConfig
 import com.rafael.models.EligibleCreatedEvent
+import com.rafael.models.EndUser
 
 import com.rafael.service.Association
 import kotlin.reflect.jvm.internal.impl.storage.NullableLazyValue
@@ -43,7 +44,9 @@ class EligibleConsumer() {
 
                 // TODO improve dead-letter/retry strategy
                 try {
-                    Association.associate(parseMessage(message))
+                    Association.associate(
+                        EndUser(parseMessage(message))
+                    )
                 } catch (e: Exception) {
                     println(e.message)
                     publishError(e.message + "->" + message)

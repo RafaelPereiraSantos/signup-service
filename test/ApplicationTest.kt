@@ -2,9 +2,8 @@ package com.rafael
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.rafael.http.EndUserCompanies
-import com.rafael.http.endUserCompaniesModule
-import com.rafael.models.EligibleCreatedEvent
+import com.rafael.http.Api
+import com.rafael.http.ServiceConfiguration
 import io.ktor.application.Application
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -16,8 +15,8 @@ import kotlin.test.assertEquals
 class ApplicationTest {
     @Test
     fun testRoot() {
-        val endUserCompanies = EndUserCompanies()
-        withTestApplication(Application::endUserCompaniesModule) {
+        val endUserCompanies = Api()
+        withTestApplication(Application::ServiceConfiguration) {
             handleRequest(HttpMethod.Get, "/health").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 val mapper = ObjectMapper()

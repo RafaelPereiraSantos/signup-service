@@ -12,7 +12,7 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 
-object Association {
+object EndUserAssociation {
 
     private const val CORE_URL = "http://localhost:3001/associate"
 

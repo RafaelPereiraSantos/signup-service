@@ -1,6 +1,5 @@
 package com.rafael.pubsub
 
-import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.rabbitmq.client.*
@@ -8,8 +7,7 @@ import com.rafael.models.AppConfig
 import com.rafael.models.EligibleCreatedEvent
 import com.rafael.models.EndUser
 
-import com.rafael.service.Association
-import kotlin.reflect.jvm.internal.impl.storage.NullableLazyValue
+import com.rafael.service.EndUserAssociation
 
 class EligibleConsumer() {
 
@@ -44,7 +42,7 @@ class EligibleConsumer() {
 
                 // TODO improve dead-letter/retry strategy
                 try {
-                    Association.associate(
+                    EndUserAssociation.associate(
                         EndUser(parseMessage(message))
                     )
                 } catch (e: Exception) {

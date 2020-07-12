@@ -2,7 +2,8 @@ package com.rafael.http
 
 import com.rafael.models.EndUser
 import com.rafael.models.RegisteringEndUser
-import com.rafael.service.Association
+import com.rafael.service.EndUserAssociation
+import com.rafael.service.EligibilitySearch
 import io.ktor.application.call
 import io.ktor.features.MissingRequestParameterException
 import io.ktor.http.HttpStatusCode
@@ -24,7 +25,7 @@ fun Route.register(){
     post("/register") {
         // TODO receive json in snake_case
         val registeringEndUser = call.receive<RegisteringEndUser>()
-        call.respond(registeringEndUser)
+        call.respond(HttpStatusCode.Created, registeringEndUser)
     }
 }
 
@@ -36,7 +37,7 @@ fun Route.associate() {
             throw AuthenticationException("Unlogged user")
         } else {
             val endUser = EndUser(1, "teste@teste.com", "abc123", "2948")
-            Association.associate(endUser)
+            EndUserAssociation.associate(endUser)
             call.respond(HttpStatusCode.Created)
         }
     }
@@ -46,18 +47,26 @@ fun Route.eligibility() {
     get("/eligibility") {
 
         // TODO implement an interceptor to check params rule
+        val params: Parameters = call.request.queryParameters
         fun missingParams(): Boolean {
-            val params: Parameters = call.request.queryParameters
-            return params["email"].isNullOrEmpty() ||
-                    params["token"].isNullOrEmpty() ||
+            return params["email"].isNullOrEmpty() &&
+                    params["token"].isNullOrEmpty() &&
                     params["personal_document"].isNullOrEmpty()
         }
 
         if (missingParams()) {
             throw MissingRequestParameterException("Missing at least one parameter")
         } else {
-            val endUser = EndUser(1, "teste@teste.com", "abc123", "2948")
-            call.respond(endUser)
+            val result = EligibilitySearch().searchBy(
+                params["email"], params["token"], params["personal_document"]
+            )
+            call.respond(
+                if (result.hasResult()) {
+                    result.result()!!
+                } else {
+                    HttpStatusCode.NotFound
+                }
+            )
         }
     }
 }

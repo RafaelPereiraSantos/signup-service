@@ -41,6 +41,7 @@ class EligibleConsumer() {
                 val message = String(body, charset("UTF-8"))
                 println("Message received: '$message'")
 
+                // TODO improve dead-letter/retry strategy
                 try {
                     Association.associate(parseMessage(message))
                 } catch (e: Exception) {

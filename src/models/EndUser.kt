@@ -9,3 +9,6 @@ data class EndUser(
     constructor(event: EligibleCreatedEvent):
             this(0, event.emailAddress, event.employeeId, "")
 }
+
+// TODO improve the different types of EndUser available
+data class RegisteringEndUser(val name: String, val emailAddress: String, val password: String)

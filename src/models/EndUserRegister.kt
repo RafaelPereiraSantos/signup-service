@@ -1,7 +1,7 @@
 package com.rafael.models
 
-class EndUserRegister {
+data class EndUserRegister(
     val name: String,
     val emailAddress: String,
     val password: String
-}
+)

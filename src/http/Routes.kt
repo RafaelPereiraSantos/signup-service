@@ -37,7 +37,7 @@ fun Route.associate() {
             throw AuthenticationException("Unlogged user")
         }
 
-        val endUser = Eligible(1, "teste@teste.com", "abc123", "2948")
+        val endUser = Eligible("teste@teste.com", "abc123", "2948")
         EndUserAssociation.associate(endUser)
         call.respond(HttpStatusCode.Created)
     }
@@ -60,6 +60,6 @@ fun Route.eligibility() {
 
 fun Parameters.missingParams(): Boolean {
     return this["email"].isNullOrEmpty() &&
-            this["token"].isNullOrEmpty() &&
-            this["personal_document"].isNullOrEmpty()
+        this["token"].isNullOrEmpty() &&
+        this["personal_document"].isNullOrEmpty()
 }

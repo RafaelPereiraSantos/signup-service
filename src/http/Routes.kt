@@ -1,10 +1,9 @@
 package com.rafael.http
 
-import com.rafael.models.EndUser
+import com.rafael.models.Eligible
 import com.rafael.models.RegisteringEndUser
 import com.rafael.service.EndUserAssociation
 import com.rafael.service.EligibilitySearch
-import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.features.MissingRequestParameterException
 import io.ktor.http.HttpStatusCode
@@ -14,7 +13,6 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
-import io.ktor.util.pipeline.PipelineContext
 import javax.naming.AuthenticationException
 
 fun Route.health() {
@@ -39,7 +37,7 @@ fun Route.associate() {
             throw AuthenticationException("Unlogged user")
         }
 
-        val endUser = EndUser(1, "teste@teste.com", "abc123", "2948")
+        val endUser = Eligible("teste@teste.com", "abc123", "2948")
         EndUserAssociation.associate(endUser)
         call.respond(HttpStatusCode.Created)
     }
@@ -62,6 +60,6 @@ fun Route.eligibility() {
 
 fun Parameters.missingParams(): Boolean {
     return this["email"].isNullOrEmpty() &&
-            this["token"].isNullOrEmpty() &&
-            this["personal_document"].isNullOrEmpty()
+        this["token"].isNullOrEmpty() &&
+        this["personal_document"].isNullOrEmpty()
 }

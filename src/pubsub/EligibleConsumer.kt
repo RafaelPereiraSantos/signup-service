@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.rabbitmq.client.*
 import com.rafael.models.AppConfig
 import com.rafael.models.EligibleCreatedEvent
-import com.rafael.models.EndUser
+import com.rafael.models.Eligible
 
 import com.rafael.service.EndUserAssociation
 
@@ -43,7 +43,7 @@ class EligibleConsumer() {
                 // TODO improve dead-letter/retry strategy
                 try {
                     EndUserAssociation.associate(
-                        EndUser(parseMessage(message))
+                        Eligible(parseMessage(message))
                     )
                 } catch (e: Exception) {
                     println(e.message)

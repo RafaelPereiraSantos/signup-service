@@ -1,19 +1,6 @@
 package com.rafael.models
 
-class SearchResult(val endUsers: List<EndUser>) {
-    fun result(): EndUser? {
-        return if (oneEndUserFound()) {
-            endUsers.first()
-        } else {
-            null
-        }
-    }
-
-    fun hasResult(): Boolean {
-        return oneEndUserFound()
-    }
-
-    private fun oneEndUserFound(): Boolean {
-        return endUsers.count() == 1
-    }
+class SearchResult(private val endUsers: List<EndUser>) {
+    fun uniqueResult() =
+        if (endUsers.count() == 1) endUsers.first() else null
 }

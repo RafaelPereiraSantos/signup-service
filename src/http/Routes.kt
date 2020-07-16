@@ -4,6 +4,7 @@ import com.rafael.models.EndUser
 import com.rafael.models.RegisteringEndUser
 import com.rafael.service.EndUserAssociation
 import com.rafael.service.EligibilitySearch
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.features.MissingRequestParameterException
 import io.ktor.http.HttpStatusCode
@@ -13,6 +14,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
+import io.ktor.util.pipeline.PipelineContext
 import javax.naming.AuthenticationException
 
 fun Route.health() {
@@ -35,38 +37,31 @@ fun Route.associate() {
         // TODO implement an authorizer interceptor
         if (cookies["session"].isNullOrEmpty()) {
             throw AuthenticationException("Unlogged user")
-        } else {
-            val endUser = EndUser(1, "teste@teste.com", "abc123", "2948")
-            EndUserAssociation.associate(endUser)
-            call.respond(HttpStatusCode.Created)
         }
+
+        val endUser = EndUser(1, "teste@teste.com", "abc123", "2948")
+        EndUserAssociation.associate(endUser)
+        call.respond(HttpStatusCode.Created)
     }
 }
 
 fun Route.eligibility() {
     get("/eligibility") {
-
         // TODO implement an interceptor to check params rule
-        val params: Parameters = call.request.queryParameters
-        fun missingParams(): Boolean {
-            return params["email"].isNullOrEmpty() &&
-                    params["token"].isNullOrEmpty() &&
-                    params["personal_document"].isNullOrEmpty()
-        }
+        val params = call.request.queryParameters
 
-        if (missingParams()) {
+        if (params.missingParams())
             throw MissingRequestParameterException("Missing at least one parameter")
-        } else {
-            val result = EligibilitySearch().searchBy(
-                params["email"], params["token"], params["personal_document"]
-            )
-            call.respond(
-                if (result.hasResult()) {
-                    result.result()!!
-                } else {
-                    HttpStatusCode.NotFound
-                }
-            )
-        }
+
+        val result = EligibilitySearch().searchBy(
+            params["email"], params["token"], params["personal_document"]
+        )
+        call.respond(result.uniqueResult() ?: HttpStatusCode.NotFound)
     }
+}
+
+fun Parameters.missingParams(): Boolean {
+    return this["email"].isNullOrEmpty() &&
+            this["token"].isNullOrEmpty() &&
+            this["personal_document"].isNullOrEmpty()
 }

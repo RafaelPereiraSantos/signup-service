@@ -20,15 +20,11 @@ object EndUserAssociation {
         runBlocking {
             val response = postAssociation(formatPayload(endUser))
             when (response.status) {
-                HttpStatusCode.Created -> {
-                    println("associated")
-                }
-                HttpStatusCode.Unauthorized -> {
-                    throw Exception("core.unauthorized")
-                }
+                HttpStatusCode.Created -> println("associated")
+                HttpStatusCode.Unauthorized -> throw Exception("core.unauthorized")
                 else -> {
-                    throw Exception("core.response.$response.status")
                     println(response.status)
+                    throw Exception("core.response.${response.status}")
                 }
             }
         }

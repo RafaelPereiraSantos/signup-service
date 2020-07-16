@@ -1,6 +1,8 @@
 package com.rafael.http
 
 import com.rafael.models.Eligible
+import com.rafael.models.ExceptionMessage
+import com.rafael.models.HttpException
 import com.rafael.models.RegisteringEndUser
 import com.rafael.service.EndUserAssociation
 import com.rafael.service.EligibilitySearch
@@ -33,8 +35,8 @@ fun Route.associate() {
     post("/associate") {
         val cookies = call.request.cookies
         // TODO implement an authorizer interceptor
-        if (cookies["session"].isNullOrEmpty()) {
-            throw AuthenticationException("Unlogged user")
+        if (cookies["session"].isNullOrBlank()) {
+            throw HttpException(401, ExceptionMessage("valid session's token not present", "client.unauthenticated"))
         }
 
         val endUser = Eligible("teste@teste.com", "abc123", "2948")

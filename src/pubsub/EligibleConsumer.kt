@@ -18,7 +18,7 @@ class EligibleConsumer() {
         val factory = ConnectionFactory()
 
         factory.host = AppConfig.rabbitConfig.host
-        factory.port = AppConfig.rabbitConfig.port
+//        factory.port = AppConfig.rabbitConfig.port
 
         val connection = factory.newConnection()
         channel = connection.createChannel()

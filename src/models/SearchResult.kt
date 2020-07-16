@@ -1,6 +1,6 @@
 package com.rafael.models
 
-class SearchResult(private val endUsers: List<EndUser>) {
+class SearchResult(private val eligibles: List<Eligible>) {
     fun uniqueResult() =
-        if (endUsers.count() == 1) endUsers.first() else null
+        if (eligibles.count() == 1) eligibles.first() else null
 }

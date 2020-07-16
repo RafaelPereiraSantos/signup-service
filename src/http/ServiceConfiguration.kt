@@ -1,5 +1,6 @@
 package com.rafael.http
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
@@ -19,6 +20,7 @@ fun Application.serviceConfiguration() {
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)
+            propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
         }
     }
 

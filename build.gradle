@@ -39,5 +39,6 @@ dependencies {
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
     compile 'com.rabbitmq:amqp-client:5.9.0'
     compile 'io.github.cdimascio:java-dotenv:5.2.1'
-    compile "io.ktor:ktor-client-apache:$ktor_version"
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit:converter-jackson:1.9.0'
 }

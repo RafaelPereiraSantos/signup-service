@@ -7,10 +7,10 @@ import io.ktor.server.netty.Netty
 class Api {
 
     private  val server = embeddedServer(Netty, AppConfig.serverConfig.port) {
-        ServiceConfiguration()
+        serviceConfiguration()
     }
 
-    fun start(wait: Boolean = true): Unit {
+    fun start(wait: Boolean = true) {
         server.start(wait = wait)
     }
 }

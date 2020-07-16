@@ -3,7 +3,7 @@ package com.rafael
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.rafael.http.Api
-import com.rafael.http.ServiceConfiguration
+import com.rafael.http.serviceConfiguration
 import io.ktor.application.Application
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -16,7 +16,7 @@ class ApplicationTest {
     @Test
     fun testRoot() {
         val endUserCompanies = Api()
-        withTestApplication(Application::ServiceConfiguration) {
+        withTestApplication(Application::serviceConfiguration) {
             handleRequest(HttpMethod.Get, "/health").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 val mapper = ObjectMapper()

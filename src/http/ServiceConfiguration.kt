@@ -15,7 +15,7 @@ import io.ktor.routing.routing
 import java.lang.Exception
 import javax.naming.AuthenticationException
 
-fun Application.ServiceConfiguration() {
+fun Application.serviceConfiguration() {
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)

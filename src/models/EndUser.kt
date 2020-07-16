@@ -7,7 +7,7 @@ data class EndUser(
     val personal_document: String
 ) {
     constructor(event: EligibleCreatedEvent):
-            this(0, event.emailAddress, event.employeeId, "")
+        this(0, event.emailAddress, event.employeeId, "")
 }
 
 // TODO improve the different types of EndUser available

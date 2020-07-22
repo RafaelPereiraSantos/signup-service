@@ -1,12 +1,12 @@
 package com.rafael.http
 
-import com.rafael.models.AppConfig
+import com.rafael.config.ServerConfig
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
-class Api {
+class Api(serverConfig: ServerConfig) {
 
-    private  val server = embeddedServer(Netty, AppConfig.serverConfig.port) {
+    private  val server = embeddedServer(Netty, serverConfig.serverPort) {
         serviceConfiguration()
     }
 

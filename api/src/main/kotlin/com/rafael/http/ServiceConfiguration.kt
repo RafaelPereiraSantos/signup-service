@@ -8,7 +8,6 @@ import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.rafael.models.ExceptionMessage
 import com.rafael.models.HttpException
 import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -19,7 +18,6 @@ import io.ktor.jackson.jackson
 import io.ktor.response.respond
 import io.ktor.routing.routing
 import java.lang.Exception
-import javax.naming.AuthenticationException
 
 fun Application.serviceConfiguration() {
     install(ContentNegotiation) {
@@ -61,11 +59,7 @@ fun Application.serviceConfiguration() {
             print("Logger: $e")
             call.respond(HttpStatusCode.InternalServerError, key)
         }
-        fun String.testGabryel(name: String) = 1
-        "a".testGabryel("aa")
-        val a: ((String) -> Int) = "String::"::testGabryel
     }
-
 
     routing {
         health()

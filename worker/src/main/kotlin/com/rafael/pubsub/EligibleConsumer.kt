@@ -3,34 +3,32 @@ package com.rafael.pubsub
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.rabbitmq.client.*
-import com.rafael.models.AppConfig
-import com.rafael.models.EligibleCreatedEvent
+import com.rafael.config.RabbitConfig
 import com.rafael.models.Eligible
-
+import com.rafael.models.EligibleCreatedEvent
 import com.rafael.service.EndUserAssociation
 
-class EligibleConsumer() {
+class EligibleConsumer(val rabbitConfig: RabbitConfig) {
 
-    private var channel: Channel? = null
+    private lateinit var channel: Channel
+
     private val errorQueue = Recv.QUEUE_NAME + "-error"
 
     fun up() {
         val factory = ConnectionFactory()
 
-        factory.host = AppConfig.rabbitConfig.host
+        factory.host = rabbitConfig.host
 //        factory.port = AppConfig.rabbitConfig.port
 
         val connection = factory.newConnection()
         channel = connection.createChannel()
 
-        val ch = channel!!
+        channel.queueDeclare(Recv.QUEUE_NAME, false, false, false, null)
+        channel.queueBind(Recv.QUEUE_NAME, Recv.EXCHANGE_NAME, Recv.BINDING_KEY)
 
-        ch.queueDeclare(Recv.QUEUE_NAME, false, false, false, null)
-        ch.queueBind(Recv.QUEUE_NAME, Recv.EXCHANGE_NAME, Recv.BINDING_KEY)
+        channel.queueDeclare(errorQueue, false, false, false, null)
 
-        ch.queueDeclare(errorQueue, false, false, false, null)
-
-        val consumer = object : DefaultConsumer(ch) {
+        val consumer = object : DefaultConsumer(channel) {
             override fun handleDelivery(
                 consumerTag: String,
                 envelope: Envelope,
@@ -43,7 +41,7 @@ class EligibleConsumer() {
                 // TODO improve dead-letter/retry strategy
                 try {
                     EndUserAssociation.associate(
-                        Eligible(parseMessage(message))
+                        parseMessage(message).toEligible()
                     )
                 } catch (e: Exception) {
                     println(e.message)
@@ -51,7 +49,8 @@ class EligibleConsumer() {
                 }
             }
         }
-        ch.basicConsume(Recv.QUEUE_NAME, true, consumer)
+
+        channel.basicConsume(Recv.QUEUE_NAME, true, consumer)
         println("Consumer alive")
     }
 
@@ -64,7 +63,7 @@ class EligibleConsumer() {
     }
 
     private fun publishError(message: String) {
-        channel!!.basicPublish(
+        channel.basicPublish(
             "",
             errorQueue,
             null,

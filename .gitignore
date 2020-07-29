@@ -7,3 +7,4 @@
 *.iws
 .env
 */build/*
+/worker/worker-spring-kafka/build/*

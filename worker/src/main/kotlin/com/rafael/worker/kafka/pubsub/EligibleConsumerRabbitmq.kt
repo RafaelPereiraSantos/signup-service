@@ -1,11 +1,10 @@
-package com.rafael.pubsub
+package com.rafael.worker.kafka.pubsub
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.rabbitmq.client.*
-import com.rafael.config.RabbitConfig
-import com.rafael.models.Eligible
-import com.rafael.models.EligibleCreatedEvent
+import com.rafael.worker.kafka.config.RabbitConfig
+import com.rafael.worker.kafka.models.EligibleCreatedEvent
 import com.rafael.service.EndUserAssociation
 
 class EligibleConsumer(val rabbitConfig: RabbitConfig) {
@@ -24,7 +23,11 @@ class EligibleConsumer(val rabbitConfig: RabbitConfig) {
         channel = connection.createChannel()
 
         channel.queueDeclare(Recv.QUEUE_NAME, false, false, false, null)
-        channel.queueBind(Recv.QUEUE_NAME, Recv.EXCHANGE_NAME, Recv.BINDING_KEY)
+        channel.queueBind(
+            Recv.QUEUE_NAME,
+            Recv.EXCHANGE_NAME,
+            Recv.BINDING_KEY
+        )
 
         channel.queueDeclare(errorQueue, false, false, false, null)
 

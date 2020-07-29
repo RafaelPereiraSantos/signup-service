@@ -1,27 +1,25 @@
-package com.rafael.pubsub
+package com.rafael.worker.kafka.pubsub
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.rafael.config.KafkaConfig
-import com.rafael.models.EligibleCreatedEvent
+import com.rafael.worker.kafka.config.KafkaConfig
+import com.rafael.worker.kafka.models.EligibleCreatedEvent
 import kafka.utils.ShutdownableThread
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
 
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import java.time.Duration
 import java.util.*
-import java.util.concurrent.CountDownLatch
 
 
 class EligibleConsumerKafka(
-        private val kafkaConfig: KafkaConfig,
-        private val topic: String = "eligibleCreated",
-        private val groupId: String = "01",
-        private val instanceId: String? = null,
-        private val readCommitted: Boolean = true
+    private val kafkaConfig: KafkaConfig,
+    private val topic: String = "eligibleCreated",
+    private val groupId: String = "01",
+    private val instanceId: String? = null,
+    private val readCommitted: Boolean = true
 ): ShutdownableThread("example", false) {
 
     private val consumer: KafkaConsumer<Int, String> = createConsumer()
@@ -67,7 +65,7 @@ class EligibleConsumerKafka(
             val mapper = ObjectMapper()
             val node: JsonNode = mapper.readTree(message)
             return EligibleCreatedEvent(
-                    node["email_address"].asText(), node["employee_id"].asText(), node["company_id"].asInt()
+                node["email_address"].asText(), node["employee_id"].asText(), node["company_id"].asInt()
             )
         } catch(e: Exception) {
             println(e)

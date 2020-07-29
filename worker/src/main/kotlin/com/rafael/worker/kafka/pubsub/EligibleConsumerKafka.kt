@@ -2,6 +2,7 @@ package com.rafael.worker.kafka.pubsub
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.rafael.worker.kafka.config.KafkaConfig
 import com.rafael.worker.kafka.models.EligibleCreatedEvent
 import kafka.utils.ShutdownableThread
@@ -15,6 +16,7 @@ import java.util.*
 
 
 class EligibleConsumerKafka(
+    private val objectMapper: ObjectMapper,
     private val kafkaConfig: KafkaConfig,
     private val topic: String = "eligibleCreated",
     private val groupId: String = "01",
@@ -62,11 +64,7 @@ class EligibleConsumerKafka(
 
     private fun deserializeEligible(message: String): EligibleCreatedEvent? {
         try {
-            val mapper = ObjectMapper()
-            val node: JsonNode = mapper.readTree(message)
-            return EligibleCreatedEvent(
-                node["email_address"].asText(), node["employee_id"].asText(), node["company_id"].asInt()
-            )
+            return objectMapper.readValue<EligibleCreatedEvent>(message)
         } catch(e: Exception) {
             println(e)
         }

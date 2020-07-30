@@ -1,4 +1,6 @@
-package com.rafael.models
+package com.rafael.worker.kafka.models
+
+import com.rafael.models.Eligible
 
 class EligibleCreatedEvent(
     val emailAddress: String,

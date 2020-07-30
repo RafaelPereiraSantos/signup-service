@@ -1,4 +1,4 @@
-package com.rafael
+package com.rafael.apiwebflux
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -9,4 +9,3 @@ class Application
 fun main() {
     runApplication<Application>()
 }
-

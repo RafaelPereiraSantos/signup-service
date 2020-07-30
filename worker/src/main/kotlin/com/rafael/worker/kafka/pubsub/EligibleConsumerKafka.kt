@@ -1,27 +1,25 @@
-package com.rafael.pubsub
+package com.rafael.worker.kafka.pubsub
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.rafael.config.KafkaConfig
-import com.rafael.models.EligibleCreatedEvent
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.rafael.worker.kafka.config.KafkaConfig
+import com.rafael.worker.kafka.models.EligibleCreatedEvent
 import kafka.utils.ShutdownableThread
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
-
-import org.apache.kafka.common.serialization.LongDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.LongDeserializer
+import org.apache.kafka.common.serialization.StringDeserializer
 import java.time.Duration
 import java.util.*
-import java.util.concurrent.CountDownLatch
 
 
 class EligibleConsumerKafka(
-        private val kafkaConfig: KafkaConfig,
-        private val topic: String = "eligibleCreated",
-        private val groupId: String = "01",
-        private val instanceId: String? = null,
-        private val readCommitted: Boolean = true
+    private val objectMapper: ObjectMapper,
+    private val kafkaConfig: KafkaConfig,
+    private val topic: String = "eligibleCreated",
+    private val groupId: String = "01",
+    private val instanceId: String? = null,
+    private val readCommitted: Boolean = true
 ): ShutdownableThread("example", false) {
 
     private val consumer: KafkaConsumer<Int, String> = createConsumer()
@@ -31,15 +29,15 @@ class EligibleConsumerKafka(
         val records = consumer.poll(Duration.ofSeconds(100))
         records.forEach { record ->
             println("--------")
-            println(groupId + " received message")
-            println("from partition " + record.partition())
-            println("(" + record.key() + ", " + record.value() + ")")
-            println("at offset " + record.offset())
+            println("$groupId received message")
+            println("from partition ${record.partition()}")
+            println("(${record.key()}, ${record.value()})")
+            println("at offset ${record.offset()}")
 
             val test = deserializeEligible(record.value())
             println(test)
         }
-        consumer.commitAsync();
+        consumer.commitAsync()
     }
 
     override fun name(): String? = null
@@ -57,18 +55,14 @@ class EligibleConsumerKafka(
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = LongDeserializer::class.java
         props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
         if (readCommitted) props[ConsumerConfig.ISOLATION_LEVEL_CONFIG] = "read_committed"
-        props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest";
+        props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
 
         return KafkaConsumer(props)
     }
 
     private fun deserializeEligible(message: String): EligibleCreatedEvent? {
         try {
-            val mapper = ObjectMapper()
-            val node: JsonNode = mapper.readTree(message)
-            return EligibleCreatedEvent(
-                    node["email_address"].asText(), node["employee_id"].asText(), node["company_id"].asInt()
-            )
+            return objectMapper.readValue<EligibleCreatedEvent>(message)
         } catch(e: Exception) {
             println(e)
         }

@@ -1,15 +1,7 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.3.71"
+    id 'application'
 }
-
-apply plugin: 'kotlin'
-apply plugin: 'application'
 
 mainClassName = "com.rafael.ApplicationKt"
 

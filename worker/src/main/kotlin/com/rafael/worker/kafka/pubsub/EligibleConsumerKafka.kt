@@ -1,6 +1,5 @@
 package com.rafael.worker.kafka.pubsub
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.rafael.worker.kafka.config.KafkaConfig
@@ -8,9 +7,8 @@ import com.rafael.worker.kafka.models.EligibleCreatedEvent
 import kafka.utils.ShutdownableThread
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
-
-import org.apache.kafka.common.serialization.LongDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.LongDeserializer
+import org.apache.kafka.common.serialization.StringDeserializer
 import java.time.Duration
 import java.util.*
 
@@ -31,15 +29,15 @@ class EligibleConsumerKafka(
         val records = consumer.poll(Duration.ofSeconds(100))
         records.forEach { record ->
             println("--------")
-            println(groupId + " received message")
-            println("from partition " + record.partition())
-            println("(" + record.key() + ", " + record.value() + ")")
-            println("at offset " + record.offset())
+            println("$groupId received message")
+            println("from partition ${record.partition()}")
+            println("(${record.key()}, ${record.value()})")
+            println("at offset ${record.offset()}")
 
             val test = deserializeEligible(record.value())
             println(test)
         }
-        consumer.commitAsync();
+        consumer.commitAsync()
     }
 
     override fun name(): String? = null
@@ -57,7 +55,7 @@ class EligibleConsumerKafka(
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = LongDeserializer::class.java
         props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
         if (readCommitted) props[ConsumerConfig.ISOLATION_LEVEL_CONFIG] = "read_committed"
-        props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest";
+        props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
 
         return KafkaConsumer(props)
     }

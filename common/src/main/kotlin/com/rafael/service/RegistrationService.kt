@@ -9,6 +9,8 @@ import com.rafael.models.ExceptionMessage
 import com.rafael.service.client.RegisterService
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
+import java.util.logging.Level
+import java.util.logging.Logger
 
 class RegistrationService (
     private val registerHost: String = "http://localhost:3001/"

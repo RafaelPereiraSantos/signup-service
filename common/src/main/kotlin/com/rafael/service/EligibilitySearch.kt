@@ -6,7 +6,7 @@ import com.rafael.models.SearchResult
 class EligibilitySearch {
     fun searchBy(email: String?, token: String?, personal_document: String?): SearchResult {
         return SearchResult(
-            listOf(Eligible(email ?: "", token ?: "", personal_document ?: ""))
+            listOf(Eligible(email ?: "", token ?: "", personal_document ?: "", 1))
         )
     }
 }

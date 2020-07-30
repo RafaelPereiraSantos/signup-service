@@ -1,0 +1,6 @@
+network:
+  clients:
+    eligible:
+      baseUrl: "http://localhost"
+    companyMember:
+      baseUrl: "http://localhost"

@@ -1,9 +1,11 @@
 package com.rafael.apiwebflux.config
 
 import com.rafael.apiwebflux.http.eligibiltyRoute
-import com.rafael.service.EligibilitySearch
+import com.rafael.apiwebflux.service.EligibleSearchService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.config.WebFluxConfigurer
 
@@ -12,5 +14,6 @@ import org.springframework.web.reactive.config.WebFluxConfigurer
 class WebConfig: WebFluxConfigurer {
 
     @Bean
-    fun eligibleSearchRoute(eligibilitySearch: EligibilitySearch) = eligibiltyRoute(eligibilitySearch)
+    fun eligibleSearchRoute(eligibilitySearchService: EligibleSearchService) =
+        eligibiltyRoute(eligibilitySearchService)
 }

@@ -9,4 +9,3 @@ class Application
 fun main() {
     runApplication<Application>()
 }
-

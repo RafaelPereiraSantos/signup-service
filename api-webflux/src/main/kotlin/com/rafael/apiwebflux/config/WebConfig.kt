@@ -4,9 +4,8 @@ import com.rafael.apiwebflux.http.eligibiltyRoute
 import com.rafael.apiwebflux.service.EligibleSearchService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.reactive.config.EnableWebFlux
+
 import org.springframework.web.reactive.config.WebFluxConfigurer
 
 @Configuration

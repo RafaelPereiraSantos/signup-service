@@ -9,7 +9,10 @@ import com.rafael.apiwebflux.config.EligibleService
 import com.rafael.models.CompanyMember
 import com.rafael.models.Eligible
 import com.rafael.models.SearchResult
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.server.ServerErrorException
 import retrofit2.http.GET
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -24,24 +27,25 @@ class EligibleSearchService(
     private val companyMemberService: CompanyMemberService
 ) {
     fun searchBy(email: String, token: String, personalDocument: String): SearchResult? {
-        try {
-            val response = eligibleServce.getEligibles(email, token, personalDocument).execute()
-            println("-----------------------------")
-            println(response.code())
-            return when (response.code()) {
-                200 -> {
-                    val resp = SearchResult(listOf(response.body()!!))
-                    println(resp)
-                    return resp
-                }
-                400 -> TODO()
-                401 -> TODO()
-                404 -> null
-                else -> TODO()
+        val response = eligibleServce.getEligibles(email, token, personalDocument).execute()
+        println(response.code())
+        return when (response.code()) {
+            200 -> {
+                val resp = SearchResult(listOf(response.body()!!))
+                return resp
             }
-        } catch (e: Exception) {
-            Logger.getGlobal().log(Level.WARNING, e.message + "something wrong happend")
-            return null
+            400 -> {
+                throw IllegalStateException(response.message())
+            }
+            401 -> {
+                throw IllegalStateException(response.message())
+            }
+            404 -> {
+                null
+            }
+            else -> {
+                throw Exception(response.message())
+            }
         }
     }
 }

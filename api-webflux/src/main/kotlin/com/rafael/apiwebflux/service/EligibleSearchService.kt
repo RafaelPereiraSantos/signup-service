@@ -26,9 +26,8 @@ class EligibleSearchService(
     private val eligibleServce: EligibleService,
     private val companyMemberService: CompanyMemberService
 ) {
-    fun searchBy(email: String, token: String, personalDocument: String): SearchResult? {
+    fun searchBy(email: String, token: String, personalDocument: String): SearchResult {
         val response = eligibleServce.getEligibles(email, token, personalDocument).execute()
-        println(response.code())
         return when (response.code()) {
             200 -> {
                 val resp = SearchResult(listOf(response.body()!!))
@@ -41,7 +40,7 @@ class EligibleSearchService(
                 throw IllegalStateException(response.message())
             }
             404 -> {
-                null
+                SearchResult()
             }
             else -> {
                 throw Exception(response.message())

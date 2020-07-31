@@ -2,10 +2,7 @@ package com.rafael.apiwebflux.http
 
 import com.rafael.apiwebflux.service.EligibleSearchService
 import com.rafael.models.Eligible
-import com.rafael.service.EligibilitySearch
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.reactive.function.server.*
 import java.io.IOException
 import java.util.logging.Level
@@ -21,7 +18,8 @@ fun eligibiltyRoute(eligibleSearchService: EligibleSearchService) = myCoRouter {
 
         val result = eligibleSearchService
             .searchBy(emailAddress, companyMemberToken, personalDocument)
-            ?: return@GET ok().bodyValueAndAwait(emptyList<Eligible>())
+            .uniqueResult()
+            ?: return@GET notFound().buildAndAwait()
         return@GET ok().bodyValueAndAwait(result)
     }
 }

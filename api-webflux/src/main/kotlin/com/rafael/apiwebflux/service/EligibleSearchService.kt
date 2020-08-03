@@ -15,10 +15,7 @@ class EligibleSearchService(
     private val companyMemberService: CompanyMemberService
 ) {
 
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-
     fun searchBy(email: String?, token: String?, personalDocument: String?): SearchResult {
-        println("asdasdasd")
         val eligibles = eligibleServce.getEligibles(email, token, personalDocument)
         val response = eligibles.execute()
         return handleResponse(response)
@@ -30,8 +27,6 @@ class EligibleSearchService(
     }
 
     private fun handleResponse(response: Response<Eligible>): SearchResult {
-        println(response.code().toString())
-        println(response.body().toString())
         return when (response.code()) {
             200 -> SearchResult(listOf(response.body()!!))
             404 -> SearchResult()

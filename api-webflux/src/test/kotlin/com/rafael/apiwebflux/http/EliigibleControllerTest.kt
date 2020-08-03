@@ -1,23 +1,24 @@
 package com.rafael.apiwebflux.http
 
-import ch.qos.logback.core.net.server.Client
-import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import com.rafael.apiwebflux.config.*
+import com.rafael.apiwebflux.config.ClientConfig
+import com.rafael.apiwebflux.config.EligibleService
+import com.rafael.apiwebflux.config.RetrofitConfig
+import com.rafael.apiwebflux.config.ServiceConfiguration
 import com.rafael.apiwebflux.service.EligibleSearchService
 import com.rafael.models.Eligible
 import com.rafael.models.SearchResult
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Bean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import retrofit2.Call
 import retrofit2.Response
 
@@ -50,9 +51,7 @@ class EliigibleControllerTest {
             on { it.execute() } doReturn Response.success(expectedEligible)
         }
 
-        Mockito.`when`(
-            eligibleService.getEligibles(any(), any(), any())
-        ).thenReturn(call)
+        `when`(eligibleService.getEligibles(anyOrNull(), anyOrNull(), anyOrNull())) doReturn call
 
         val params = listOf(
             "email" to expectedEligible.emailAddress,
@@ -69,8 +68,7 @@ class EliigibleControllerTest {
         assertAll(
             { result.expectStatus().isOk },
             {
-                result.expectBody(Eligible::class.java)
-                    .isEqualTo<Nothing>(expectedEligible)
+                result.expectBody<Eligible>().isEqualTo(expectedEligible)
             }
         )
     }

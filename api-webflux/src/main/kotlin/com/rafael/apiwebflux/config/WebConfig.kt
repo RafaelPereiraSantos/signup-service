@@ -24,14 +24,10 @@ class WebConfig: WebFluxConfigurer {
 
     @Bean
     fun rootRoute(eligibilitySearchService: EligibleSearchService) = coRouter {
-        add(eligibleSearchRoute(eligibilitySearchService))
+        add(eligibiltyRoute(eligibilitySearchService))
 
         configureErrorHandler()
     }
-
-    @Bean
-    fun eligibleSearchRoute(eligibilitySearchService: EligibleSearchService) =
-        eligibiltyRoute(eligibilitySearchService)
 
     fun CoRouterFunctionDsl.configureErrorHandler() {
         onError<IOException> { e, _ ->

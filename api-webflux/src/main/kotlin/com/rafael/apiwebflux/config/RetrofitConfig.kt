@@ -6,6 +6,7 @@ import com.rafael.models.Eligible
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.http.GET
@@ -14,10 +15,17 @@ import retrofit2.http.Query
 interface EligibleService {
     @GET("/eligibles")
     fun getEligibles(
-        @Query("email_address") email: String,
-        @Query("employee_id") token: String,
-        @Query("document") personalDocument: String
+        @Query("email_address") email: String?,
+        @Query("employee_id") token: String?,
+        @Query("document") personalDocument: String?
     ): Call<Eligible>
+
+    @GET("/eligibles")
+    suspend fun coGetEligibles(
+        @Query("email_address") email: String?,
+        @Query("employee_id") token: String?,
+        @Query("document") personalDocument: String?
+    ): Response<Eligible>
 }
 
 interface CompanyMemberService {

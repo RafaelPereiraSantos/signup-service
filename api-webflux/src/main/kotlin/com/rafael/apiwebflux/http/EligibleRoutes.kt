@@ -1,16 +1,13 @@
 package com.rafael.apiwebflux.http
 
 import com.rafael.apiwebflux.service.EligibleSearchService
-import com.rafael.models.Eligible
 import org.springframework.http.HttpStatus
-import org.springframework.web.reactive.function.server.*
-import java.io.IOException
-import java.io.PrintWriter
-import java.io.StringWriter
-import java.util.logging.Level
-import java.util.logging.Logger
+import org.springframework.web.reactive.function.server.CoRouterFunctionDsl
+import org.springframework.web.reactive.function.server.bodyValueAndAwait
+import org.springframework.web.reactive.function.server.buildAndAwait
+import org.springframework.web.reactive.function.server.coRouter
 
-fun eligibiltyRoute(eligibleSearchService: EligibleSearchService) = myCoRouter {
+fun eligibiltyRoute(eligibleSearchService: EligibleSearchService) = coRouter {
     GET("/eligibility") { request ->
         println("yay! a request")
 
@@ -24,14 +21,8 @@ fun eligibiltyRoute(eligibleSearchService: EligibleSearchService) = myCoRouter {
             ?: return@GET notFound().buildAndAwait()
         return@GET ok().bodyValueAndAwait(result)
     }
-}
 
-fun myCoRouter(routes: (CoRouterFunctionDsl.() -> Unit)): RouterFunction<ServerResponse> {
-    return coRouter {
-        routes()
-        configureRejectionHandler()
-        configureErrorHandler()
-    }
+    configureRejectionHandler()
 }
 
 fun CoRouterFunctionDsl.configureRejectionHandler() {
@@ -46,27 +37,3 @@ fun CoRouterFunctionDsl.configureRejectionHandler() {
         }
     }
 }
-
-fun CoRouterFunctionDsl.configureErrorHandler() {
-    onError<IOException> { e, _ ->
-        Logger.getGlobal().log(Level.SEVERE, "${e.message} : Can't connect to the server")
-        status(500).buildAndAwait()
-    }
-    onError<IllegalStateException> {  e, _ ->
-        Logger.getGlobal().log(Level.WARNING, "${e.message} : Can't connect to the server")
-        status(500).buildAndAwait()
-    }
-    onError<Exception> { e, _ ->
-        Logger.getGlobal().log(Level.WARNING, "${e.message} : ${getStackTrace(e)}")
-        status(500).bodyValueAndAwait(
-            Eligible(getStackTrace(e), "error key", "a", 1)
-        )
-    }
-}
-
-fun getStackTrace(e: Throwable): String {
-    val sw: StringWriter = StringWriter()
-    e.printStackTrace(PrintWriter(sw))
-    return sw.toString()
-}
-

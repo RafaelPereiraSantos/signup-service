@@ -30,8 +30,7 @@ class EligibleSearchService(
         return when (response.code()) {
             200 -> SearchResult(listOf(response.body()!!))
             404 -> SearchResult()
-            400 -> throw IllegalStateException(response.message())
-            401 -> throw IllegalStateException(response.message())
+            400, 401 -> throw IllegalStateException(response.message())
             else -> throw Exception(response.code().toString())
         }
     }

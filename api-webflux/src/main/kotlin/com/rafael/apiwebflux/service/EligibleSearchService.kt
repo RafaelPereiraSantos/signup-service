@@ -7,6 +7,7 @@ import com.rafael.models.SearchResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 import retrofit2.Response
 
 @Service
@@ -24,6 +25,12 @@ class EligibleSearchService(
     suspend fun coSearchBy(email: String?, token: String?, personalDocument: String?): SearchResult {
         val response = eligibleServce.coGetEligibles(email, token, personalDocument)
         return handleResponse(response)
+    }
+
+    fun reactorSearchBy(email: String?, token: String?, personalDocument: String?): Mono<SearchResult> {
+        return eligibleServce.reactorGetEligibles(email, token, personalDocument).map {
+            handleResponse(it)
+        }
     }
 
     private fun handleResponse(response: Response<Eligible>): SearchResult {

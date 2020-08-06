@@ -1,10 +1,12 @@
 package com.rafael.apiwebflux.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
 import com.rafael.models.CompanyMember
 import com.rafael.models.Eligible
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import reactor.core.publisher.Mono
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -26,6 +28,13 @@ interface EligibleService {
         @Query("employee_id") token: String?,
         @Query("document") personalDocument: String?
     ): Response<Eligible>
+
+    @GET("/eligibles")
+    fun reactorGetEligibles(
+        @Query("email_address") email: String?,
+        @Query("employee_id") token: String?,
+        @Query("document") personalDocument: String?
+    ): Mono<Response<Eligible>>
 }
 
 interface CompanyMemberService {
@@ -67,6 +76,7 @@ class RetrofitConfig(
         val retrofit = Retrofit.Builder()
             .baseUrl(clientConfig.clients.getOrThrow(clientName).baseUrl)
             .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+            .addCallAdapterFactory(ReactorCallAdapterFactory.create())
             .build()
         return retrofit.create(retrofitInterface)
     }

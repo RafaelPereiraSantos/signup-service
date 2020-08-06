@@ -4,3 +4,10 @@ network:
       baseUrl: "http://localhost:3001"
     companyMember:
       baseUrl: "http://localhost:3001"
+spring:
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /webjars/swagger-ui/**.*

@@ -27,7 +27,9 @@ class WebConfig: WebFluxConfigurer {
 
     @Bean
     @RouterOperations(*[
-        RouterOperation(path = "/reactor/eligibility", beanClass = EligibleSearchService::class, beanMethod = "reactorSearchBy"),
+        RouterOperation(
+            path = "/reactor/eligibility", beanClass = EligibleSearchService::class, beanMethod = "reactorSearchBy", headers=["X-session"]
+        ),
         RouterOperation(path = "/co/eligibility", beanClass = EligibleSearchService::class, beanMethod = "coSearchBy")
     ])
     fun rootRoute(eligibilitySearchService: EligibleSearchService) = coRouter {

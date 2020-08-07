@@ -63,6 +63,7 @@ class EliigibleControllerTest {
         val result = webTestClient
             .get()
             .uri("/web-flux-controller/eligibility$params")
+            .header("X-Session", "asdf")
             .exchange()
 
         assertAll(

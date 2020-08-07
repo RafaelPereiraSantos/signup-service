@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean
 
 @SpringBootApplication
 @EnableConfigurationProperties
+
 class Application {
     @Bean
 	fun customOpenAPI(): OpenAPI {
@@ -30,7 +31,7 @@ class Application {
 
 	@Bean
 	fun employeesOpenApi(): GroupedOpenApi {
-		val paths = arrayOf("/co/eligibility/**", "/reactor/eligibility/**")
+		val paths = arrayOf("/co/eligibility/**", "/reactor/eligibility/**", "/web-flux-controller/eligibility/**")
 		return GroupedOpenApi.builder().group("eligibility").pathsToMatch(*paths).build()
 	}
 }

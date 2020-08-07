@@ -33,14 +33,19 @@ class EligibleRoutesTest {
         ) doReturn searchResultMonoWith(expectedEligible)
 
         val client = WebTestClient
-            .bindToRouterFunction(coEligibiltyRoute(eligibleSearchService))
+            .bindToRouterFunction(reactorEligibiltyRoute(eligibleSearchService))
             .build()
+        
+        val params = mountQueryParams(
+            "email" to expectedEligible.emailAddress,
+            "company_member_token" to expectedEligible.employeeId,
+            "personal_document" to expectedEligible.personalDocument,
+            "company_id" to expectedEligible.companyId
+        )
 
         val result = client.get()
-            .uri(
-                "/eligibility?email=$email&company_member_token=$companyMemberToken&personal_document=$personalDocument"
-            )
-            .exchange()
+            .uri("/reactor/eligibility$params").exchange()
+
         assertAll(
             { result.expectStatus().isOk },
             {
@@ -63,14 +68,19 @@ class EligibleRoutesTest {
         }
 
         val client = WebTestClient
-            .bindToRouterFunction(coEligibiltyRoute(eligibleSearchServiceMock))
+            .bindToRouterFunction(reactorEligibiltyRoute(eligibleSearchServiceMock))
             .build()
 
+        val params = mountQueryParams(
+            "email" to expectedEligible.emailAddress,
+            "company_member_token" to expectedEligible.employeeId,
+            "personal_document" to expectedEligible.personalDocument,
+            "company_id" to expectedEligible.companyId
+        )
+
         val result = client.get()
-            .uri(
-                "/eligibility?email=$email&company_member_token=$companyMemberToken&personal_document=$personalDocument"
-            )
-            .exchange()
+            .uri("/reactor/eligibility$params").exchange()
+
         assertAll(
             { result.expectStatus().isOk },
             {
@@ -93,13 +103,18 @@ class EligibleRoutesTest {
         }
 
         val client = WebTestClient
-            .bindToRouterFunction(coEligibiltyRoute(eligibleSearchServiceMock))
+            .bindToRouterFunction(reactorEligibiltyRoute(eligibleSearchServiceMock))
             .build()
 
+        val params = mountQueryParams(
+            "email" to expectedEligible.emailAddress,
+            "company_member_token" to expectedEligible.employeeId,
+            "personal_document" to expectedEligible.personalDocument,
+            "company_id" to expectedEligible.companyId
+        )
+
         client.get()
-            .uri(
-                "/eligibility?email=$email&company_member_token=$companyMemberToken&personal_document=$personalDocument"
-            ).exchange()
+            .uri("/reactor/eligibility$params").exchange()
 
         verify(eligibleSearchServiceMock).reactorSearchBy(any(), any(), eq(personalDocument))
 
@@ -116,20 +131,18 @@ class EligibleRoutesTest {
         }
 
         val client = WebTestClient
-            .bindToRouterFunction(coEligibiltyRoute(eligibleSearchServiceMock))
+            .bindToRouterFunction(reactorEligibiltyRoute(eligibleSearchServiceMock))
             .build()
 
-        val params = listOf(
+        val params = mountQueryParams(
             "email" to expectedEligible.emailAddress,
             "company_member_token" to expectedEligible.employeeId,
             "personal_document" to expectedEligible.personalDocument,
             "company_id" to expectedEligible.companyId
-        ).joinToString("&", "?") { (key, value) -> "$key=$value" }
+        )
 
         client.get()
-            .uri(
-                "/eligibility$params"
-            ).exchange()
+            .uri("/reactor/eligibility$params").exchange()
 
         assertEquals(expectedEligible.emailAddress, emailCaptor.firstValue)
     }
@@ -142,4 +155,7 @@ class EligibleRoutesTest {
     ) = Eligible(email, token, personalDocument, companyId)
 
     fun searchResultMonoWith(vararg eligibles: Eligible) = Mono.just(SearchResult(eligibles.toList()))
+
+    fun mountQueryParams(vararg params: Pair<String, *>) =
+        params.joinToString("&", "?") { (key, value) -> "$key=$value" }
 }

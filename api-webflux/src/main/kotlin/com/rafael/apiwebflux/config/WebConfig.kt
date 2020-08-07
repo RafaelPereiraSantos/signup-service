@@ -1,9 +1,12 @@
 package com.rafael.apiwebflux.config
 
-import com.rafael.apiwebflux.http.eligibiltyRoute
+import com.rafael.apiwebflux.http.coEligibiltyRoute
+import com.rafael.apiwebflux.http.reactorEligibiltyRoute
 import com.rafael.apiwebflux.service.EligibleSearchService
 import com.rafael.models.Eligible
 import org.slf4j.LoggerFactory
+import org.springdoc.core.annotations.RouterOperation
+import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.config.EnableWebFlux
@@ -23,9 +26,13 @@ class WebConfig: WebFluxConfigurer {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Bean
+    @RouterOperations(*[
+        RouterOperation(path = "/reactor/eligibility", beanClass = EligibleSearchService::class, beanMethod = "reactorSearchBy"),
+        RouterOperation(path = "/co/eligibility", beanClass = EligibleSearchService::class, beanMethod = "coSearchBy")
+    ])
     fun rootRoute(eligibilitySearchService: EligibleSearchService) = coRouter {
-        add(eligibiltyRoute(eligibilitySearchService))
-
+        add(reactorEligibiltyRoute(eligibilitySearchService))
+        add(coEligibiltyRoute(eligibilitySearchService))
         configureErrorHandler()
     }
 

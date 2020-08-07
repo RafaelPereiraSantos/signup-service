@@ -1,3 +1,5 @@
 rootProject.name = "signup-service"
 
-include("api-ktor", "api-spring", "api-webflux", "worker", "common", "worker:worker-spring-kafka")
+include("common")
+include("api:ktor", "api:spring", "api:webflux")
+include("worker:commonw", "worker:plain-kafka", "worker:plain-rabbit", "worker:spring-kafka")

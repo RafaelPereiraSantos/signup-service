@@ -1,0 +1,12 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.3.71"
+    id 'application'
+}
+
+mainClassName = "com.rafael.ApplicationKt"
+
+dependencies {
+    implementation(project(':worker:commonw'))
+
+    implementation 'org.apache.kafka:kafka_2.13:2.5.0'
+}
